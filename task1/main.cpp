@@ -15,10 +15,10 @@ private:
     int* i;
 };
 
-class Bar: Foo // problem: should be public inheritance
+class Bar: Foo // problem: should be public inheritance, private by default
 {
 public:
-    Bar(int j) 
+    Bar(int j) // problem: should have Foo constructor call here, cause we have non-default one for Foo
     { 
         i = new char[j]; 
     }
@@ -36,7 +36,9 @@ void main() // problem: non-standard main function form, should return int
 {
     Foo* f = new Foo(100);
     Foo* b = new Bar(200);
-    *f = *b;
+    *f = *b; 
+    // problem: we will have double free error below, cause we have the same object pointed by two pointers.
+    // this is general design error 
     delete f;
     delete b;
 
