@@ -13,7 +13,7 @@ public:
     bool isInProgress() const { return m_inProgress; }
     void setInProgress(bool val);
 
-    Q_INVOKABLE void startProcessing(QString fileName);
+    Q_INVOKABLE void startProcessing(QString fileUrlString);
     Q_INVOKABLE void stopProcessing();
 
 signals:

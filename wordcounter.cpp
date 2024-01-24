@@ -5,6 +5,7 @@
 #include <QThreadPool>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QUrl>
 
 namespace
 {
@@ -28,10 +29,11 @@ void WordCounter::setInProgress(bool val)
     }
 }
 
-void WordCounter::startProcessing(QString fileName)
+void WordCounter::startProcessing(QString fileUrlString)
 {
     // 1. open file read-only
-    QFile file(fileName);
+    const QUrl fileUrl(fileUrlString);
+    QFile file(fileUrl.path());
     if (!file.exists())
         qt_assert("File not exists", __FILE__, __LINE__);
 

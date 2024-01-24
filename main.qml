@@ -3,6 +3,7 @@ import QtQuick.Window 2.15
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.15
 import QtCharts 2.15
+import QtQuick.Dialogs 1.3
 import my.WordCounter 1.0
 
 Window {
@@ -21,7 +22,7 @@ Window {
             Button {
                 id: openFileButton
                 text: qsTr("Open File")
-                onClicked: wordCounter.startProcessing("../2gis_test_task/sample2.txt")
+                onClicked: fDialog.open()
             }
             Button {
                 id: stopProcessingButton
@@ -50,5 +51,14 @@ Window {
                 }
             }
         }
+    }
+
+    FileDialog {
+        id: fDialog
+        title: "Please choose a file"
+        folder: shortcuts.documents
+        nameFilters: [ "Text file (*.txt)" ]
+        selectedNameFilter: nameFilters[0]
+        onAccepted: wordCounter.startProcessing(fileUrl)
     }
 }
