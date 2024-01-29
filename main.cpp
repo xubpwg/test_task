@@ -1,28 +1,25 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
-#include "wordcounter.hpp"
+#include "controller.hpp"
 
 const QUrl QML_MAIN_URL = QStringLiteral("qrc:/main.qml");
 const QString CPP_CONSTRUCTION_ONLY = QStringLiteral("cpp construction only");
-const QString WORD_COUNTER_MODULE = QStringLiteral("my.WordCounter");
+const QString WORD_COUNTER_MODULE = QStringLiteral("my.wc");
 
 int main(int argc, char *argv[])
 {
-    // @uri my.WordCounter
+    // @uri my.wc
     qmlRegisterModule(WORD_COUNTER_MODULE.toLatin1(), 1, 0);
-    qmlRegisterUncreatableType<WordCounter>(WORD_COUNTER_MODULE.toLatin1(), 1, 0,
-                                            "WordCounter", CPP_CONSTRUCTION_ONLY);
+    qmlRegisterUncreatableType<wc::Controller>(WORD_COUNTER_MODULE.toLatin1(), 1, 0,
+                                            "WCController", CPP_CONSTRUCTION_ONLY);
 
     QApplication app(argc, argv);
 
-    QQmlApplicationEngine engine;
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [](QObject *obj, const QUrl &objUrl) {
-        if (!obj && objUrl == QML_MAIN_URL) QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
+    wc::Controller controller(&app);
 
-    WordCounter wordCounter(&app);
+    QQmlApplicationEngine engine;
     engine.setInitialProperties({
-        {"wordCounter", QVariant::fromValue(&wordCounter)}
+        {"controller", QVariant::fromValue(&controller)}
     });
     engine.load(QML_MAIN_URL);
 

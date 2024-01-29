@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.15
 import QtCharts 2.15
 import QtQuick.Dialogs 1.3
-import my.WordCounter 1.0
+import my.wc 1.0
 
 Window {
     id: root
@@ -14,7 +14,7 @@ Window {
     visible: true
     title: qsTr("Word Counter")
 
-    required property WordCounter wordCounter
+    required property WCController controller
 
     ColumnLayout {
         anchors.fill: parent
@@ -25,9 +25,18 @@ Window {
                 onClicked: fDialog.open()
             }
             Button {
-                id: stopProcessingButton
-                text: qsTr("Stop Processing")
+                id: resetButton
+                text: qsTr("Reset Progress")
+                onClicked: controller.resetProcessing()
             }
+        }
+        FileDialog {
+            id: fDialog
+            title: "Please choose a file"
+            folder: shortcuts.documents
+            nameFilters: [ "Text file (*.txt)" ]
+            selectedNameFilter: nameFilters[0]
+            onAccepted: controller.startProcessing(fileUrl)
         }
 
         ChartView {
@@ -41,24 +50,34 @@ Window {
                 id: mySeries
 
                 axisX: BarCategoryAxis {
-                    id: wordsAxis
-                    categories: ["2007", "2008", "2009", "2010", "2011", "2012"]
+                    id: xAxis
+                }
+
+                axisY: ValueAxis {
+                    id: yAxis
+                    min: 0.0
+                    max: controller.topCount
                 }
 
                 BarSet {
+                    id: mySeriesBarSet
                     label: "word count";
-                    values: [2, 2, 3, 4, 5, 6]
                 }
             }
         }
     }
 
-    FileDialog {
-        id: fDialog
-        title: "Please choose a file"
-        folder: shortcuts.documents
-        nameFilters: [ "Text file (*.txt)" ]
-        selectedNameFilter: nameFilters[0]
-        onAccepted: wordCounter.startProcessing(fileUrl)
+    Connections {
+        target: controller
+
+        function onTopWordsChanged() {
+            xAxis.categories = controller.topWords
+        }
+
+        function onTopWordsCountChanged() {
+            mySeriesBarSet.values = controller.topWordsCount
+        }
     }
+
+
 }

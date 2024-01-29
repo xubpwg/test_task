@@ -1,4 +1,4 @@
-QT += quick charts qml
+QT += quick charts qml concurrent
 
 CONFIG += c++17
 
@@ -7,9 +7,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        controller.cpp \
         main.cpp \
-        onewordcountrunnable.cpp \
-        wordcounter.cpp
+        onewordcounter.cpp \
+        uniquewordcollector.cpp
 
 RESOURCES += qml.qrc
 
@@ -25,5 +26,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    onewordcountrunnable.hpp \
-    wordcounter.hpp
+    controller.hpp \
+    onewordcounter.hpp \
+    uniquewordcollector.hpp \
+    worddata.hpp
